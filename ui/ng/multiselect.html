@@ -1,0 +1,9 @@
+<label for="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}">{{getParam(edit.id, $index).name}} <strong class="rq">*</strong></label>
+<select multiple required ng-multiple="true"
+    name="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+    id="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+    ng-model="p.value"
+    ng-change="srvChange()"
+>
+    <option ng-repeat="v in getParam(edit.id, $index).values" value="{{$index}}">{{v.name}}</option>
+</select>

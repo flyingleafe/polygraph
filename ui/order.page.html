@@ -1,0 +1,217 @@
+<?php include "navbar.block.html"; ?>
+<div ng-app="serviceOrder" ng-controller="ServicesCtrl"> <!-- initializing Angular only on this page -->
+    <!-- service adding modal -->
+    <div id="add-service" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Добавить услугу к заказу</h3>
+        </div>
+        <div class="modal-body">
+            <p>
+                <label for="add-new-service">Выберите услугу:</label>
+                <select
+                    ng-model="newChosenService"
+                    ng-options="s.id as s.name for s in services"
+                    name="add-new-service"
+                    class="input-xlarge"
+                    id="add-new-service">
+                </select>
+            </p>
+            <button ng-click="chooseSrv(newChosenService)" class="btn btn-success" data-dismiss="modal" aria-hidden="true"><i class="icon-plus-sign"></i> Добавить к заказу</button>
+        </div>
+    </div>
+    <!-- service adding modal -->
+    <div id="add-file" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Прикрепить файл к услуге</h3>
+        </div>
+        <div class="modal-body">
+            <form action="/fileadd" method="post">
+                <input type="file" name="add-new-file" class="input-xlarge" id="add-new-file">
+                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true"><i class="icon-plus-sign"></i> Прикрепить файл</button>
+            </form>
+        </div>
+    </div>
+    <div class="form-description">
+        <h2>Заказ услуги такой-то.</h2>
+        <p>Заполните форму заказа... Все необходимые поля...</p>
+        <p>Если у Вас возникли вопросы, к Вашим услугам...</p>
+        <p>Поля, обозначенные красной звездочкой (<strong class="rq">*</strong>), обязательны для заполнения</p>
+    </div>
+    <form action="/proceed" class="order-form">
+        <div class="contact-info" ng-controller="ConnectionsCtrl">
+            <div class="control-group">
+                <label for="name" class="control-label">Ваше имя <strong class="rq">*</strong></label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span>
+                        <input bs-popover class="input-xlarge popovered" name="name" id="name" type="text" title="Введите Ваше имя" data-content="Нам нужно знать, как к вам обращаться" data-trigger="focus" required>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="company" class="control-label">Название фирмы/организации</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-group"></i></span>
+                        <input bs-popover class="input-xlarge popovered" name="company" id="company" type="text" title="Название Вашей организации" data-content="Если вы делаете заказ для вашей организации или предприятия, заполните это поле" data-trigger="focus">
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="phone1" class="control-label">Номер телефона <strong class="rq">*</strong></label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-phone"></i></span>
+                        <input bs-popover class="input-xlarge popovered" name="phone1" id="phone1" type="text" title="Введите Ваш контактный номер телефона" data-content="Вы можете добавить другие способы связи чуть ниже" data-trigger="focus" required>
+                    </div>
+                </div>
+            </div>
+            <div ng-repeat="con in connections | filter:active=true" class="control-group">
+                <label for="{{con.id}}" class="control-label">{{con.name}}</label>
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="{{con.icon}}"></i></span>
+                        <input class="input-xlarge" name="{{con.id}}" id="{{con.id}}" type="text">
+                    </div>
+                    <span ng-click="con.active=false" class="muted con-remove"><i class="icon-remove"></i> Удалить</span>
+                </div>
+            </div>
+            <p>
+                <div class='btn-group'>
+                    <button ng-show="(connections|filter:active=false).length" class='btn btn-primary btn-small dropdown-toggle' data-toggle='dropdown'>Добавить доп. способы связи <span class='caret'></span></button>
+                    <ul class='dropdown-menu'>
+                        <li ng-repeat="con in connections | filter:active=false"><a href='' ng-click="con.active=true" class='addfield'><i class='{{con.icon}}'></i> {{con.name}}</a></li>
+                    </ul>
+                </div>
+            </p>
+        </div>
+        <div ng-show="chosenServices.length==0" class="well centered">
+            <strong>Вы еще не выбрали ни одной услуги.</strong>
+        </div>
+        <div ng-repeat="srv in uniqueChosenServices()" class="block-window order-params" id="service-edit-{{srv.id}}">
+            <div class="block-heading">{{ srvName(srv.name) }}</div>
+            <div class="block-body">
+                <div class="row-fluid">
+                    <div class="span7">
+                        <ul class="edit-tabs nav nav-tabs">
+                            <li ng-class="{active: edit.active}" ng-repeat="edit in getEdits(srv.id)">
+                                <a ng-click="activateEdit(srv.id, $index)" href="">Тираж {{$index+1}}</a>
+                            </li>
+                        </ul>
+                        <div class="editions tab-content">
+                            <div
+                                ng-class="{active: edit.active}"
+                                ng-repeat="edit in getEdits(srv.id)"
+                                class="tab-pane"
+                                id="service{{edit.id}}-edit{{$index}}"
+                            >
+                                <div ng-repeat="p in edit.params" ng-include="'/ui/ng/' + getParam(edit.id, $index).type + '.html'"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+                        <p>
+                            <button type="button" bs-popover
+                                ng-click="chooseSrv(srv.id)"
+                                class="btn btn-warning"
+                                data-content="Вы можете добавить дополнительный тираж вашего рекламного объявления с другими параметрами, например, напечатать немного рекламы большого формата для размещения в центре города."
+                                data-trigger="hover"
+                            ><i class="icon-plus"></i> Добавить тираж</button>
+                        </p>
+                        <div class="well centered">
+                            <h3>Стоимость тиража:</h3>
+                            <h1>{{ srvCost(findActiveEditNum(srv.id)) }} <small>руб.</small></h1>
+                        </div>
+                    </div>
+                </div>
+                <h4>Текст рекламного объявления:</h4>
+                <div class="row-fluid">
+                    <div class="span7">
+                        <textarea class="input-block-level" name="advert-text1" id="advert-text1" cols="30" rows="9"></textarea>
+                    </div>
+                    <div class="span5">
+                        <div class="well">
+                            <h4>Макет будет бесплатно сверстан профессиональным дизайнером</h4>
+                            <p>Вы можете набрать текст рекламного объявления в "Ворде" и прислать нам:</p>
+                            <a href="#add-file" data-toggle="modal" class="btn btn-primary btn-block"><i class="icon-upload"></i> Прислать файл</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>
+            <a href="#add-service" class="btn btn-danger btn-large btn-block" data-toggle="modal"><i class="icon-plus-sign"></i> Добавить услуги</a>
+        </p>
+        <div ng-show="chosenServices.length>0" class="block-window">
+            <div class="block-heading">Список заказов</div>
+            <div class="block-body">
+                <table class="table table-hover orders">
+                    <thead>
+                        <tr>
+                            <th>Наименование</th>
+                            <th>Стоимость</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="srv in chosenServices">
+                            <td>{{ srv.name }}</td>
+                            <td ng-bind="srvCost($index) + ' руб.'"></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button ng-click="removeSrv($index)" class="btn btn-danger"><i class="icon-remove"></i> Удалить</button>
+                                    <a href="#service-edit-{{srv.id}}" ng-click="activateEdit(srv.id, $index, true)" class="btn btn-warning"><i class="icon-edit"></i> Редактировать</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div ng-show="chosenServices.length>0" class="block-window">
+            <div class="block-heading">Итого к оплате:</div>
+            <div class="block-body centered">
+                <h1>{{ totalCost() }} <small>руб.</small></h1>
+            </div>
+        </div>
+        <div ng-show="chosenServices.length>0" class="block-window">
+            <div class="block-heading">Выберите способ оплаты:</div>
+            <div class="block-body">
+                <div class="row-fluid">
+                    <div class="span6 offset1">
+                        <label>
+                            <input type="radio" name="payment-way" id="payment-way" value="sms"> SMS с телефона
+                        </label>
+                        <label>
+                            <input type="radio" name="payment-way" id="payment-way" value="card"> Банковской картой
+                        </label>
+                        <label>
+                            <input type="radio" name="payment-way" id="payment-way" value="terminal"> Через платежный терминал
+                        </label>
+                        <label>
+                            <input type="radio" name="payment-way" id="payment-way" value="bill"> Выставить счет (для организации)
+                        </label>
+                    </div>
+                    <div class="span5">
+                        <div class="well">
+                            Разные подсказки для разных систем
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p>
+                <label style="font-size: 20px;"><input type="checkbox" ng-model="ruleAgree" name="agreement"> Подтверждаю согласие с "Условиями"</label>
+            </p>
+            <button ng-class='{disabled: (chosenServices.length==0 || !ruleAgree)}' class="btn btn-large btn-success">Далее <i class="icon-arrow-right"></i></button>
+        </div>
+    </form>
+    <?php foreach(glob("ui/ng/*.html") as $path) : ?>
+        <script type="text/ng-template" id="/<?= $path ?>">
+            <?php include $path; ?>
+        </script>
+    <?php endforeach; ?>
+</div>

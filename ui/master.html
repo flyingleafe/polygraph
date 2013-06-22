@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Рекламное агентство "КОПЫТО" - Лучшая реклама в городе Городове</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>if(!window.jQuery) document.write('<script src="/css/jquery-1.9.1.min.js"><\/script>')</script>
+    <script src="/js/underscore.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+    <div class="slogan">Изготовление и размещение рекламы в городе Городове</div>
+    <?php if($content === 'index'): ?>
+        <a href="#about" class="about-anchor">О компании</a>
+    <?php endif; ?>
+    <!-- recall -->
+    <div id="recall" class="modal hide recall" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Оставьте свои контактные данные, мы перезвоним в удобное для вас время.</h3>
+            <form action="/recall" class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="greeting">Как к вам обращаться</label>
+                    <div class="controls">
+                        <input type="text" id="greeting" name="greeting" placeholder="">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="phone">Контактный телефон</label>
+                    <div class="controls">
+                        <input type="text" id="phone" name="phone" placeholder="">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="time">Во сколько позвонить</label>
+                    <div class="controls">
+                        <input type="text" class="input-small" id="time" name="time" placeholder="">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success"><i class="icon-mail-forward"></i> Отправить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- end recall -->
+    <div class="container">
+        <div class="wrap">
+            <header class="row-fluid">
+                <div class="contacts span6">
+                    <div class="phone">
+                        <a href="#recall" data-toggle="modal"><span><i class="icon-phone"></i> +7 900 123 45 67</span></a>
+                    </div>
+                    <div class="icons">
+                        <a href="#"><span class="social mail"></span> </a>
+                        <a href="#"><span class="social vk"></span> </a>
+                        <a href="#"><span class="social fb"></span> </a>
+                        <a href="#"><span class="social inst"></span> </a>
+                        <a href="#"><span class="social linkedin"></span> </a>
+                        <a href="#"><span class="social skype"></span> </a>
+                        <a href="#"><span class="social tw"></span> </a>
+                    </div>
+                </div>
+                <a href="/" class="logo span6"></a>
+            </header>
+            <?php include "$content.html"; ?>
+            <!-- Футер -->
+            <footer class="clearfix row-fluid">
+                <div class="span6" style="padding-top: 20px;">© 2013 Филипп Нестеров. Авторские права защищены.</div>
+                <div class="span6" style="text-align: right;">
+                    <strong>По любым вопросами вы можете обратиться к нам:</strong><br>
+                    по телефону <a href="#">+7 900 123 45 67</a>, электронной почте <a href="mailto:mail@mail.com">mail@mail.com</a>, "скайпу" <a href="#">kopito2000</a>, а также через социальные сети -- <a href="#">Вконтакте</a>, <a href="#">facebook</a> и <a href="#">twitter</a>.
+                </div>
+            </footer>
+            <!-- Конец футера -->
+        </div>
+    </div>
+</body>
+</html>

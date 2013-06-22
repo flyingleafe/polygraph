@@ -1,0 +1,32 @@
+[
+    {
+        "id": "phone2",
+        "name": "Доп. номер телефона",
+        "icon": "icon-phone-sign",
+        "active": false
+    },
+    {
+        "id": "email",
+        "name": "Электронная почта",
+        "icon": "icon-envelope",
+        "active": false
+    },
+    {
+        "id": "skype",
+        "name": "Skype",
+        "icon": "icon-skype",
+        "active": false
+    },
+    {
+        "id": "icq",
+        "name": "ICQ",
+        "icon": "icon-plus-sign",
+        "active": false
+    },
+    {
+        "id": "others",
+        "name": "Другое",
+        "icon": "icon-plus-sign",
+        "active": false
+    }
+]

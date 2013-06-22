@@ -1,0 +1,11 @@
+<label for="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}">{{getParam(edit.id, $index).name}} <strong class="rq">*</strong></label>
+<select required
+    data-content="{{ getParam(edit.id, $index).desc }}"
+    data-trigger="hover"
+    name="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+    id="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+    ng-model="p.value"
+    ng-change="srvChange()"
+    ng-options="v.val as v.name for v in getParam(edit.id, $index).values"
+    bs-popover
+></select>

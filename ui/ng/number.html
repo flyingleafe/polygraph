@@ -1,0 +1,9 @@
+<label for="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}">{{getParam(edit.id, $index).name}} <strong class="rq">*</strong></label>
+<input required
+    ng-model="p.value"
+    ng-change="srvChange()"
+    type="number"
+    min="1"
+    name="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+    id="service{{edit.id}}-edit{{$parent.$parent.$index}}-param{{$index}}"
+>
